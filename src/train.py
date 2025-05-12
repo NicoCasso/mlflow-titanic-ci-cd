@@ -142,7 +142,7 @@ def train_model(X, y, params, exp_path):
           'model': model.__class__.__name__
         })
 
-        print_devider('Saving plots')
+        print_divider('Saving plots')
 
         # scores
         log_plot(scores, pf.scores, 'scores.png')
@@ -219,7 +219,7 @@ def main():
     }
 
     experiment_id, run_uuid = train_model(X, y, params, 'titanic')
-    print_devider('MLflow UI')
+    print_divider('MLflow UI')
     print('Run URL: http://127.0.0.1:5000/#/experiments/{0}/runs/{1}\n'
           .format(experiment_id, run_uuid))
     os.system('mlflow ui')
