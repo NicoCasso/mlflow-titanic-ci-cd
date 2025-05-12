@@ -1,3 +1,4 @@
+import os
 import pickle
 
 #______________________________________________________________________________
@@ -10,6 +11,9 @@ def print_divider(title):
 #
 # region load_pickle
 #______________________________________________________________________________
-def load_pickle(fp):
-    with open(fp, 'rb') as f:
-        return pickle.load(f)
+def load_pickle(file_path):
+    if os.path.getsize(file_path) > 0:  # Vérifie que le fichier n'est pas vide
+        with open(file_path, 'rb') as f:
+            return pickle.load(f)
+    else:
+        raise ValueError(f"Le fichier {file_path} est vide.")

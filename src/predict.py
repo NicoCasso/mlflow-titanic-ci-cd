@@ -20,18 +20,59 @@ class EnsembleModel:
             proba += model.predict_proba(X, num_iteration=model.best_iteration_)
         return proba / len(self.models)
 
+
+#______________________________________________________________________________
+#
+# region get_experiment_id_folder
+#______________________________________________________________________________
+def get_experiment_id_folder_name() :
+    experiment_id_folder_name = '0'
+    mlruns_path = os.path.join(os.getcwd(), "mlruns")
+    if os.path.exists(mlruns_path):
+        for root, dirs, files in os.walk(mlruns_path):
+            for dir_name in dirs:
+                if dir_name in ["0", ".trash"] :
+                    continue
+
+                experiment_id_folder_name = dir_name
+                break
+        
+            if experiment_id_folder_name != '0' : 
+                break
+    else:
+        print(f"❌ Le dossier {mlruns_path} n'existe pas.")
+
+    return experiment_id_folder_name
+
+
 #______________________________________________________________________________
 #
 # region main
 #______________________________________________________________________________
 def main():
-    EXPERIMENT_ID = '1'
-    runs = mlflow.search_runs(EXPERIMENT_ID,
-                              order_by=['metrics.accuracy DESC', 'attribute.start_time DESC'],
-                              max_results=10)
+    
+    experiment_id = get_experiment_id_folder_name()
+ 
+    runs = mlflow.search_runs(
+        experiment_ids=[experiment_id],
+        order_by=['metrics.accuracy DESC', 'attribute.start_time DESC'],
+        max_results=10)
+    
+    if runs.empty:
+        raise ValueError(f"Aucun run trouvé pour l'expérience ID={experiment_id}")
+
     print(runs)
 
-    models_path = re.sub('^file://', '', runs.loc[0, 'params.model_path'])
+    if 'params.model_path' not in runs.columns:
+        raise KeyError("Le paramètre 'model_path' n'a pas été loggé dans les runs.")
+    
+    raw_path = runs.loc[0, 'params.model_path']
+    parsed_path = re.sub('^file://', '', raw_path)
+    models_path = os.path.normpath(parsed_path.lstrip('/'))
+
+    models_path= '/' + models_path # sous Linux
+    
+    #/home/nicolascassonnet/Documents/WORK/mlflow-titanic-ci-cd/mlruns/961726105335844291/9f7a1ec644254408b2f6e1034cad193f/artifacts/models.pkl
     models = load_pickle(models_path)
     model = EnsembleModel(models)
 
