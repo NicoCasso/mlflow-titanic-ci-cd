@@ -1,0 +1,23 @@
+name: Run Tests on Push
+
+on: 
+  push:
+    branches:
+      - develop_ubuntu
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Run pytest
+        run: pytest -v --tb=no
