@@ -4,11 +4,17 @@ import numpy as np
 import pandas as pd
 from config import TRAIN_PATH, TEST_PATH, PROCESSED_TRAIN_PATH, PROCESSED_TEST_PATH
 
-
+#______________________________________________________________________________
+#
+# region replace_ext
+#______________________________________________________________________________
 def replace_ext(fp, ext):
     return os.path.splitext(fp)[0] + (ext if ext.startswith(ext) else f'.{ext}')
 
-
+#______________________________________________________________________________
+#
+# region describe
+#______________________________________________________________________________
 def describe(df):
     nrows = len(df)
     df_ret = pd.DataFrame()
@@ -39,7 +45,10 @@ def describe(df):
 
     return df_ret
 
-
+#______________________________________________________________________________
+#
+# region reduce_mem_usage
+#______________________________________________________________________________
 def reduce_mem_usage(df, verbose=True):
     numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
     start_mem = df.memory_usage().sum() / 1024**2
@@ -68,7 +77,10 @@ def reduce_mem_usage(df, verbose=True):
     end_mem = df.memory_usage().sum() / 1024**2
     if verbose: print('Memory usage decreased to {:.2f} Mb ({:.1f}% reduction)'.format(end_mem, 100 * (start_mem - end_mem) / start_mem))
 
-
+#______________________________________________________________________________
+#
+# region preprocess
+#______________________________________________________________________________
 def preprocess(train, test):
     cols_to_drop = ['Cabin', 'Name', 'PassengerId', 'Ticket']
     train.drop(cols_to_drop, axis=1, inplace=True)
@@ -119,7 +131,10 @@ def preprocess(train, test):
             # train[col + '_freq'] = train[col].map(merged[col].value_counts(dropna=False))
             # test[col + '_freq'] = test[col].map(merged[col].value_counts(dropna=False))
 
-
+#______________________________________________________________________________
+#
+# region main
+#______________________________________________________________________________
 def main():
     train = pd.read_csv(TRAIN_PATH)
     test = pd.read_csv(TEST_PATH)

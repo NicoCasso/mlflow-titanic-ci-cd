@@ -6,7 +6,10 @@ import mlflow
 from utils import load_pickle
 from config import DATA_DIR, PROCESSED_TEST_PATH
 
-
+#______________________________________________________________________________
+#
+# region EnsembleModel
+#______________________________________________________________________________
 class EnsembleModel:
     def __init__(self, models):
         self.models = models
@@ -17,7 +20,10 @@ class EnsembleModel:
             proba += model.predict_proba(X, num_iteration=model.best_iteration_)
         return proba / len(self.models)
 
-
+#______________________________________________________________________________
+#
+# region main
+#______________________________________________________________________________
 def main():
     EXPERIMENT_ID = '1'
     runs = mlflow.search_runs(EXPERIMENT_ID,

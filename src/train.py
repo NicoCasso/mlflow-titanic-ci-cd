@@ -1,5 +1,3 @@
-
-
 import os
 import warnings
 import pickle
@@ -16,19 +14,26 @@ from sklearn.metrics import (accuracy_score,
                              roc_auc_score,
                              precision_recall_curve,
                              average_precision_score)
+
 from sklearn.model_selection import StratifiedKFold
 import lightgbm as lgbm
 import mlflow
 
 import plot_funcs as pf
-from utils import print_devider
+from utils import print_divider
 from config import PROCESSED_TRAIN_PATH
 
-
-def devide_by_sum(x):
+#______________________________________________________________________________
+#
+# region divide_by_sum
+#______________________________________________________________________________
+def divide_by_sum(x):
     return x / x.sum()
 
-
+#______________________________________________________________________________
+#
+# region get_scores
+#______________________________________________________________________________
 def get_scores(y_true, y_pred):
     return {
       'accuracy': accuracy_score(y_true, y_pred),
@@ -37,7 +42,10 @@ def get_scores(y_true, y_pred):
       'f1': f1_score(y_true, y_pred),
     }
 
-
+#______________________________________________________________________________
+#
+# region log_plot
+#______________________________________________________________________________
 def log_plot(args, plot_func, fp):
     if not isinstance(args, (tuple)):
         args = (args,)
@@ -47,7 +55,10 @@ def log_plot(args, plot_func, fp):
     os.remove(fp)
     print(f'Logged {fp}')
 
-
+#______________________________________________________________________________
+#
+# region train_model
+#______________________________________________________________________________
 def train_model(X, y, params, exp_path):
     fold_params = params['fold']
     model_params = params['model']
@@ -79,14 +90,17 @@ def train_model(X, y, params, exp_path):
         log_plot(y.value_counts(), pf.label_share, 'label_share.png')
 
         for fold_no, (idx_train, idx_valid) in enumerate(skf.split(X, y)):
-            print_devider(f'Fold: {fold_no}')
+            print_divider(f'Fold: {fold_no}')
 
             X_train, X_valid = X.iloc[idx_train, :], X.iloc[idx_valid, :]
             y_train, y_valid = y.iloc[idx_train], y.iloc[idx_valid]
 
             # train model
             model = lgbm.LGBMClassifier(**model_params)
-            model.fit(X_train, y_train, **fit_params, eval_set=[(X_valid, y_valid)], eval_names=['valid'])
+            model.fit(X_train, y_train, 
+                      eval_set=[(X_valid, y_valid)], 
+                      eval_names=['valid'],
+                      callbacks=[lgbm.early_stopping(stopping_rounds=10)])
             metrics.append({
               'name': model.metric,
               'values': model.evals_result_['valid'][model.metric],
@@ -95,8 +109,8 @@ def train_model(X, y, params, exp_path):
             models.append(model)
 
             # feature importance
-            feature_importances_split += devide_by_sum(model.booster_.feature_importance(importance_type='split')) / skf.n_splits
-            feature_importances_gain += devide_by_sum(model.booster_.feature_importance(importance_type='gain')) / skf.n_splits
+            feature_importances_split += divide_by_sum(model.booster_.feature_importance(importance_type='split')) / skf.n_splits
+            feature_importances_gain += divide_by_sum(model.booster_.feature_importance(importance_type='gain')) / skf.n_splits
 
             # predict
             y_valid_proba = model.predict_proba(X_valid, num_iteration=model.best_iteration_)[:, 1]
@@ -167,7 +181,10 @@ def train_model(X, y, params, exp_path):
 
     return run.info.experiment_id, run.info.run_uuid
 
-
+#______________________________________________________________________________
+#
+# region main
+#______________________________________________________________________________
 def main():
     warnings.filterwarnings('ignore')
 
