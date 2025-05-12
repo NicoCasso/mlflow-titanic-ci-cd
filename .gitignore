@@ -6,3 +6,4 @@ data/*.pkl
 mlruns/
 *.gif
 .venv
+.env

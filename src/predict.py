@@ -50,36 +50,36 @@ def get_experiment_id_folder_name() :
 # region main
 #______________________________________________________________________________
 def main():
-    
-    experiment_id = get_experiment_id_folder_name()
+    EXPERIMENT_ID = get_experiment_id_folder_name()
  
     runs = mlflow.search_runs(
-        experiment_ids=[experiment_id],
+        experiment_ids=[EXPERIMENT_ID],
         order_by=['metrics.accuracy DESC', 'attribute.start_time DESC'],
         max_results=10)
     
     if runs.empty:
-        raise ValueError(f"Aucun run trouvé pour l'expérience ID={experiment_id}")
+        raise ValueError(f"Aucun run trouvé pour l'expérience ID={EXPERIMENT_ID}")
+
 
     print(runs)
+    print(runs.columns)
+    print(runs.head())
 
-    if 'params.model_path' not in runs.columns:
-        raise KeyError("Le paramètre 'model_path' n'a pas été loggé dans les runs.")
-    
+    #models_path = re.sub('^file://', '', runs.loc[0, 'params.model_path'])
     raw_path = runs.loc[0, 'params.model_path']
     parsed_path = re.sub('^file://', '', raw_path)
     models_path = os.path.normpath(parsed_path.lstrip('/'))
 
     models_path= '/' + models_path # sous Linux
-    
     #/home/nicolascassonnet/Documents/WORK/mlflow-titanic-ci-cd/mlruns/961726105335844291/9f7a1ec644254408b2f6e1034cad193f/artifacts/models.pkl
+
     models = load_pickle(models_path)
     model = EnsembleModel(models)
 
     X_test = pd.read_pickle(PROCESSED_TEST_PATH)
     proba = model.predict_proba(X_test)[:, 1]
     fp = os.path.join(DATA_DIR, 'prediction.csv')
-    pd.DataFrame(proba, columns=['proba']).to_csv(fp, index=False)
+    pd.DataFrame(proba, columns=['probaz']).to_csv(fp, index=False)
 
 
 if __name__ == '__main__':
