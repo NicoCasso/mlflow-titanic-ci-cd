@@ -25,20 +25,26 @@ class EnsembleModel:
 # region main
 #______________________________________________________________________________
 def main():
-    EXPERIMENT_ID = '1'
+    EXPERIMENT_ID = '343152224088962963'
     runs = mlflow.search_runs(EXPERIMENT_ID,
                               order_by=['metrics.accuracy DESC', 'attribute.start_time DESC'],
                               max_results=10)
     print(runs)
+    print(runs.columns)
+    print(runs.head())
 
-    models_path = re.sub('^file://', '', runs.loc[0, 'params.model_path'])
+    #models_path = re.sub('^file://', '', runs.loc[0, 'params.model_path'])
+    raw_path = runs.loc[0, 'params.model_path']
+    parsed_path = re.sub('^file://', '', raw_path)
+    models_path = os.path.normpath(parsed_path.lstrip('/'))
+
     models = load_pickle(models_path)
     model = EnsembleModel(models)
 
     X_test = pd.read_pickle(PROCESSED_TEST_PATH)
     proba = model.predict_proba(X_test)[:, 1]
     fp = os.path.join(DATA_DIR, 'prediction.csv')
-    pd.DataFrame(proba, columns=['proba']).to_csv(fp, index=False)
+    pd.DataFrame(proba, columns=['probaz']).to_csv(fp, index=False)
 
 
 if __name__ == '__main__':
