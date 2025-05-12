@@ -1,4 +1,5 @@
 import pickle
+import matplotlib.pyplot as plt
 
 #______________________________________________________________________________
 #
@@ -13,3 +14,7 @@ def print_divider(title):
 def load_pickle(fp):
     with open(fp, 'rb') as f:
         return pickle.load(f)
+
+def close_all_figures():
+    """Ferme toutes les figures ouvertes de matplotlib"""
+    plt.close('all')

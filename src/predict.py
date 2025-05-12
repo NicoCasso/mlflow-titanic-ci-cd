@@ -3,8 +3,8 @@ import re
 import numpy as np
 import pandas as pd
 import mlflow
-from utils import load_pickle
-from config import DATA_DIR, PROCESSED_TEST_PATH
+from src.utils import load_pickle
+from src.config import DATA_DIR, PROCESSED_TEST_PATH
 
 #______________________________________________________________________________
 #
