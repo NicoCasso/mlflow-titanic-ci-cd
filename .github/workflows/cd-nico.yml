@@ -1,10 +1,10 @@
-name: CD Nico
+name: CD-Nico
 run-name: Déploiement de ${{ github.ref_name }} 
 
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["CI Nico"]
+    workflows: ["CI-Nico"]
     types:
       - completed
 

@@ -1,4 +1,4 @@
-name: CI Nico
+name: CI-Nico
 run-name : Intégration de ${{ github.ref_name }} par ${{ github.actor }}
 
 on: 
@@ -36,7 +36,7 @@ jobs:
            pip install -r requirements.txt
 
       - name: Run pytest
-        run : pytest -m "unit" -v
+        run : pytest -m "unit" -v --disable-warnings
 
   functional-tests:
     name: Functional Tests
@@ -68,4 +68,4 @@ jobs:
 
       - name : Run functional tests
         run: |
-          pytest -m "functional" -v
+          pytest -m "functional" -v --disable-warnings
