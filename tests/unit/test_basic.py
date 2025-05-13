@@ -12,3 +12,7 @@ def test_one_plus_two_equals_three() :
 def test_two_plus_two_equals_four() :
     assert 2 + 2 == 4
 
+@pytest.mark.unit
+def test_two_plus_three_equals_five() :
+    assert 2 + 2 == 5
+
