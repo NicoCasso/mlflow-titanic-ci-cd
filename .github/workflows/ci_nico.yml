@@ -1,5 +1,5 @@
 name: CI Nico
-run-name : Tests automatiques ... de ${{ github.ref_name }} par ${{ github.actor }}
+run-name : CI de ${{ github.ref_name }} par ${{ github.actor }}
 
 on: 
   push:
