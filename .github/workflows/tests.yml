@@ -33,4 +33,4 @@ jobs:
         run: pip install pytest
 
       - name: Run pytest
-        run: pytest -v --tb=no --junitxml=pytest-report.xml
+        run : pytest

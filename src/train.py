@@ -176,9 +176,13 @@ def train_model(X, y, params, exp_path):
         with open(models_path, 'wb') as f:
             pickle.dump(models, f)
 
+        #print(f"Heloo, BSWW, Logging model to MLflow: {models_path}")
+
         mlflow.log_artifact(models_path)
         mlflow.log_param('model_path', os.path.join(run.info.artifact_uri, models_path))
         os.remove(models_path)
+
+    #print(f"Heloo, BSW2, Logging model to MLflow: {run.info.experiment_id}, {run.info.run_uuid}")
 
     return run.info.experiment_id, run.info.run_uuid
 

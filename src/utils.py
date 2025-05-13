@@ -1,5 +1,6 @@
 import os
 import pickle
+import matplotlib.pyplot as plt
 
 #______________________________________________________________________________
 #
@@ -24,4 +25,7 @@ def load_pickle(file_path):
         return_value = pickle.load(f)
 
     return return_value
-        
+
+def close_all_figures():
+    """Ferme toutes les figures ouvertes de matplotlib"""
+    plt.close('all')

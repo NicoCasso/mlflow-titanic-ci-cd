@@ -2,14 +2,17 @@ import os
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 import numpy as np
 import pandas as pd
-from config import TRAIN_PATH, TEST_PATH, PROCESSED_TRAIN_PATH, PROCESSED_TEST_PATH
+from src.config import TRAIN_PATH, TEST_PATH, PROCESSED_TRAIN_PATH, PROCESSED_TEST_PATH
 
 #______________________________________________________________________________
 #
 # region replace_ext
 #______________________________________________________________________________
 def replace_ext(fp, ext):
-    return os.path.splitext(fp)[0] + (ext if ext.startswith(ext) else f'.{ext}')
+    base = os.path.splitext(fp)[0]
+    ext = ext.lstrip(".")
+    return f"{base}.{ext}"
+    #return os.path.splitext(fp)[0] + (ext if ext.startswith(ext) else f'.{ext}')
 
 #______________________________________________________________________________
 #
