@@ -21,9 +21,9 @@ from sklearn.model_selection import StratifiedKFold
 import lightgbm as lgbm
 import mlflow
 
-import plot_funcs as pf
-from utils import print_divider
-from config import PROCESSED_TRAIN_PATH
+import src.plot_funcs as pf
+from src.utils import print_divider
+from src.config import PROCESSED_TRAIN_PATH
 
 
 # ______________________________________________________________________________
