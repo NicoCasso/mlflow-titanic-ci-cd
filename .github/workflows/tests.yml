@@ -1,5 +1,5 @@
 name: Run Tests on Push
-run-name : GitHub Actions tests on branch ${{ github.ref }} by ${{ github.actor }}
+run-name : Tests automatiques de ${{ github.ref_name }} par ${{ github.actor }}
 
 on: 
   push:
