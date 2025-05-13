@@ -21,13 +21,35 @@ class EnsembleModel:
             proba += model.predict_proba(X, num_iteration=model.best_iteration_)
         return proba / len(self.models)
 
+#______________________________________________________________________________
+#
+# region get_experiment_id_folder
+#______________________________________________________________________________
+def get_experiment_id_folder_name() :
+    experiment_id_folder_name = '0'
+    mlruns_path = os.path.join(os.getcwd(), "mlruns")
+    if os.path.exists(mlruns_path):
+        for root, dirs, files in os.walk(mlruns_path):
+            for dir_name in dirs:
+                if dir_name in ["0", ".trash"] :
+                    continue
+
+                experiment_id_folder_name = dir_name
+                break
+        
+            if experiment_id_folder_name != '0' : 
+                break
+    else:
+        print(f"❌ Le dossier {mlruns_path} n'existe pas.")
+
+    return experiment_id_folder_name
 
 # ______________________________________________________________________________
 #
 # region main
 # ______________________________________________________________________________
 def main():
-    EXPERIMENT_ID = "343152224088962963"
+    EXPERIMENT_ID = get_experiment_id_folder_name()
     runs = mlflow.search_runs(
         EXPERIMENT_ID,
         order_by=["metrics.accuracy DESC", "attribute.start_time DESC"],
