@@ -59,19 +59,32 @@ def main():
     print(runs.columns)
     print(runs.head())
 
-    # models_path = re.sub('^file://', '', runs.loc[0, 'params.model_path'])
+    # Traitement du chemin du modèle
     raw_path = runs.loc[0, "params.model_path"]
-    parsed_path = re.sub("^file://", "", raw_path)
-    models_path = os.path.normpath(parsed_path.lstrip("/"))
+    # Ne garder que la partie après "mlruns/"
+    match = re.search(r"mlruns[\\/](.*)", raw_path)
+    if not match:
+        raise ValueError(f"Chemin invalide : {raw_path}")
 
+    relative_path = match.group(1).replace("\\", "/")
+    models_path = os.path.join("/app/mlruns", relative_path)
+    models_path = os.path.normpath(models_path)
+    print(f"Chemin vers le modèle : {models_path}")
+
+    # Charger les modèles depuis le fichier pickle
     models = load_pickle(models_path)
     model = EnsembleModel(models)
 
+    # Charger les données de test
     X_test = pd.read_pickle(PROCESSED_TEST_PATH)
-    proba = model.predict_proba(X_test)[:, 1]
-    fp = os.path.join(DATA_DIR, "prediction.csv")
-    pd.DataFrame(proba, columns=["probaze"]).to_csv(fp, index=False)
 
+    # Faire des prédictions
+    proba = model.predict_proba(X_test)[:, 1]
+
+    # Sauvegarder les prédictions dans un fichier CSV
+    fp = os.path.join(DATA_DIR, "predictions.csv")
+    print(f"Fichier de sortie : {fp}")
+    pd.DataFrame(proba, columns=["probazee"]).to_csv(fp, index=False)
 
 if __name__ == "__main__":
     main()

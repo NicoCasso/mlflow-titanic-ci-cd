@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.ipynb
+.env
+.git/
+tests/__pycache__/
