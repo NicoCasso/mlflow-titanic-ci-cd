@@ -1,4 +1,4 @@
-name: CI-Nico
+name: CI_Nico
 run-name : Intégration de ${{ github.ref_name }} par ${{ github.actor }}
 
 on: 
