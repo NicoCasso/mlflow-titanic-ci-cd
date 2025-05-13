@@ -18,6 +18,7 @@ def temp_filepath():
     f.close()
     return f.name
 
+@pytest.mark.unit
 def test_label_share():
     share = pd.Series([10, 20, 30], index=['A', 'B', 'C'])
     fp = temp_filepath()
@@ -25,6 +26,7 @@ def test_label_share():
     assert os.path.exists(fp)
     os.remove(fp)
 
+@pytest.mark.unit
 def test_corr_matrix():
     data = np.random.rand(5, 5)
     corr = pd.DataFrame(data).corr()
@@ -33,6 +35,7 @@ def test_corr_matrix():
     assert os.path.exists(fp)
     os.remove(fp)
 
+@pytest.mark.unit
 def test_confusion_matrix():
     cm = np.array([[50, 10],
                    [5, 35]])
@@ -41,6 +44,7 @@ def test_confusion_matrix():
     assert os.path.exists(fp)
     os.remove(fp)
 
+@pytest.mark.unit
 def test_metric():
     metrics = [
         {'name': 'Accuracy', 'values': [0.6, 0.7, 0.8, 0.75], 'best_iteration': 3},
@@ -51,6 +55,7 @@ def test_metric():
     assert os.path.exists(fp)
     os.remove(fp)
 
+@pytest.mark.unit
 def test_feature_importance():
     features = np.array(['f1', 'f2', 'f3'])
     importances = np.array([0.2, 0.5, 0.3])
@@ -59,6 +64,7 @@ def test_feature_importance():
     assert os.path.exists(fp)
     os.remove(fp)
 
+@pytest.mark.unit
 def test_scores():
     scores_dict = {'acc': 0.92, 'f1': 0.85, 'recall': 0.88, 'precision': 0.89}
     fp = temp_filepath()
@@ -66,6 +72,7 @@ def test_scores():
     assert os.path.exists(fp)
     os.remove(fp)
 
+@pytest.mark.unit
 def test_roc_curve():
     fpr = np.array([0.0, 0.1, 0.2, 1.0])
     tpr = np.array([0.0, 0.4, 0.8, 1.0])
@@ -75,6 +82,7 @@ def test_roc_curve():
     assert os.path.exists(fp)
     os.remove(fp)
 
+@pytest.mark.unit
 def test_pr_curve():
     prec = np.array([1.0, 0.8, 0.6, 0.4])
     rec = np.array([0.0, 0.2, 0.4, 1.0])

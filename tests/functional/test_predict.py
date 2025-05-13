@@ -1,29 +1,12 @@
 import numpy as np
 import pandas as pd
+import pytest
 from unittest.mock import patch
-from src import predict  # assure-toi que le dossier src est bien un module Python (__init__.py)
+from src import predict  # Assure-toi que le dossier src contient bien un __init__.py
+from tests.dummy_model import DummyModel
 
-# DummyModel pour simuler un modèle entraîné
-class DummyModel:
-    def __init__(self):
-        self.n_classes_ = 2
-        self.best_iteration_ = 0
-
-    def predict_proba(self, X, num_iteration=None):
-        return np.array([[0.1, 0.9]] * len(X))
-
-# Test de la classe EnsembleModel
-def test_ensemble_model_predict_proba():
-    models = [DummyModel(), DummyModel()]
-    ensemble = predict.EnsembleModel(models)
-
-    X = np.zeros((3, 4))
-    result = ensemble.predict_proba(X)
-
-    expected = np.array([[0.1, 0.9]] * 3)
-    np.testing.assert_array_almost_equal(result, expected)
-
-# Test de la fonction main
+# ✅ Test fonctionnel : simule le pipeline complet de prédiction, avec mocks
+@pytest.mark.functional
 @patch("src.predict.load_pickle")
 @patch("src.predict.mlflow.search_runs")
 @patch("src.predict.pd.read_pickle")
