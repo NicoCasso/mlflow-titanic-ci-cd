@@ -6,7 +6,6 @@ on:
     workflows: ["CI Nico"]
     types:
       - completed
-
 jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -20,3 +19,27 @@ jobs:
         run: |
           echo "Déploiement en cours..."
           ./deploy.sh  # Remplace ceci par ton vrai script de déploiement
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Afficher des infos sur le déclenchement
+        run: |
+          echo "Déclenché par le workflow : ${{ github.event.workflow_run.name }}"
+          echo "Statut du run CI : ${{ github.event.workflow_run.conclusion }}"
+          echo "Déclenché par : ${{ github.actor }}"
+
+      - name: Liste des fichiers (debug)
+        run: ls -la
+
+      - name: Déploiement (exemple)
+        run: |
+          echo "Déploiement en cours..."
+          chmod +x ./deploy.sh
+          ./deploy.sh || echo "Le script deploy.sh est manquant ou échoue."
