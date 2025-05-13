@@ -101,6 +101,7 @@ def train_model(X, y, params, exp_path):
                       eval_set=[(X_valid, y_valid)], 
                       eval_names=['valid'],
                       callbacks=[lgbm.early_stopping(stopping_rounds=10)])
+            
             metrics.append({
               'name': model.metric,
               'values': model.evals_result_['valid'][model.metric],
