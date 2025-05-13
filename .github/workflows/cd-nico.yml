@@ -26,7 +26,4 @@ jobs:
         run: ls -la
 
       - name: Déploiement (exemple)
-        run: |
-          echo "Déploiement en cours..."
-          chmod +x ./deploy.sh
-          ./deploy.sh || echo "Le script deploy.sh est manquant ou échoue."
+        run: echo "Déploiement fictif terminé avec succès ✅"
