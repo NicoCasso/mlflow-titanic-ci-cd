@@ -70,7 +70,7 @@ def main():
     X_test = pd.read_pickle(PROCESSED_TEST_PATH)
     proba = model.predict_proba(X_test)[:, 1]
     fp = os.path.join(DATA_DIR, "prediction.csv")
-    pd.DataFrame(proba, columns=["probaz"]).to_csv(fp, index=False)
+    pd.DataFrame(proba, columns=["probaze"]).to_csv(fp, index=False)
 
 
 if __name__ == "__main__":
