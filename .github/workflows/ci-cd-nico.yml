@@ -76,6 +76,6 @@ jobs:
     needs: unit-tests
 
   call-deployment:
-    name: CD = Call deployment (after part 3)
+    name: Deploy on docker (after part 3)
     uses: ./.github/workflows/cd-nico.yml
     needs: functional-tests
