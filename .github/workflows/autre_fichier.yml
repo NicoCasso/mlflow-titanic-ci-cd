@@ -2,14 +2,12 @@ name: Autre_Fichier_Yml
 run-name: essai
 
 on:
-  workflow_run:
-    workflows: ["CI Nico"]
-    types:
-      - completed
+  push:
+    branches:
+      - develop_ubuntu
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
