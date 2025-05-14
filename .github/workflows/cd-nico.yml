@@ -3,7 +3,7 @@ run-name: Déploiement de ${{ github.ref_name }}
 
 on:
   workflow_run:
-    workflows: [CI Nico]
+    workflows: ["CI Nico"]
     types:
       - completed
 
