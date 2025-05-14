@@ -1,9 +1,10 @@
 name: Autre_Fichier_Yml
 
-on: 
-  push:
-    branches:
-      - develop_ubuntu
+on:
+  workflow_run:
+    workflows: [CI Nico]
+      types: 
+        - completed
   
 
 jobs:
