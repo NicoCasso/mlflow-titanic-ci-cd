@@ -4,9 +4,9 @@ run-name: essai
 on: 
   workflow_run:
     workflows: ["CI Nico"]
-    types: [requested]
+    types: [completed]
     branches:
-      - "completed"
+      - "develop_ubuntu"
 
 jobs:
   deploy:
