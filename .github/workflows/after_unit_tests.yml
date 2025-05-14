@@ -1,0 +1,13 @@
+name: After unit tests
+run-name: Après les tests unitaires
+
+on:
+  workflow_call:
+
+jobs:
+  after-unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: print
+        run: echo "tâche réalisée après les tests unitaires ✅"
