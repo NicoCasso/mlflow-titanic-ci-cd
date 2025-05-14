@@ -1,10 +1,12 @@
 name: Autre_Fichier_Yml
+run-name: essai
 
-on:
+on: 
   workflow_run:
-    workflows: [CI Nico]
-    types: 
-      - completed
+    workflows: ["CI Nico"]
+    types: [requested]
+    branches:
+      - "completed"
 
 jobs:
   deploy:
