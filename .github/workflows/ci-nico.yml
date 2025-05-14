@@ -71,9 +71,9 @@ jobs:
           pytest -m "functional" -v --disable-warnings
 
   call-example:
-    name: Call example
+    name: Call other task
     uses: ./.github/workflows/autre_fichier.yml
-    needs: functional-tests
+    needs: unit-tests
 
   call-deployment:
     name: Call deployment

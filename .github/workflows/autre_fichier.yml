@@ -5,7 +5,7 @@ on:
   workflow_call:
 
 jobs:
-  deploy:
+  other-task:
     runs-on: ubuntu-latest
 
     steps:
