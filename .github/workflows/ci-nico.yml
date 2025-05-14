@@ -71,5 +71,6 @@ jobs:
           pytest -m "functional" -v --disable-warnings
 
   call-deployment:
+    name: Call deployment
     uses: ./.github/workflows/cd-nico.yml
     needs: functional-tests
