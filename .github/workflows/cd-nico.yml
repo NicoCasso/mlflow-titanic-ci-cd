@@ -1,4 +1,4 @@
-name: CD Nico
+name: Déploiement Nico
 run-name: Déploiement de ${{ github.ref_name }} 
 
 on:
