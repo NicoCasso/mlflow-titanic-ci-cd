@@ -3,9 +3,8 @@ name: Autre_Fichier_Yml
 on:
   workflow_run:
     workflows: [CI Nico]
-      types: 
-        - completed
-  
+    types: [completed]
+    branches: [develop_ubuntu]
 
 jobs:
   deploy:
@@ -13,4 +12,4 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3 add .
