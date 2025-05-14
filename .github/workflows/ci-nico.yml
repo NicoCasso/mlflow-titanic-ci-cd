@@ -72,7 +72,7 @@ jobs:
 
   call-example:
     name: Call other task
-    uses: ./.github/workflows/autre_fichier.yml
+    uses: ./.github/workflows/after_unit_tests.yml
     needs: unit-tests
 
   call-deployment:
