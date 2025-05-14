@@ -1,5 +1,5 @@
 name: Tests Nico
-run-name : Lancement des tests pour ${{ github.ref_name }} par ${{ github.actor }}
+run-name : Tests de ${{ github.ref_name }} par ${{ github.actor }}
 
 on: 
   push:
@@ -69,6 +69,11 @@ jobs:
       - name : Run functional tests
         run: |
           pytest -m "functional" -v --disable-warnings
+
+  call-example:
+    name: Call example
+    uses: ./.github/workflows/autre_fichier.yml
+    needs: functional-tests
 
   call-deployment:
     name: Call deployment

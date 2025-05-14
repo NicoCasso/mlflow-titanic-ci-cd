@@ -1,5 +1,5 @@
 name: Déploiement Nico
-run-name: Déploiement de ${{ github.ref_name }} 
+run-name: Déploiement de ${{ github.ref_name }} par ${{ github.actor }}
 
 on:
   workflow_call:
