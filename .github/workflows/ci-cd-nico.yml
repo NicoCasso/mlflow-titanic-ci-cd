@@ -1,5 +1,5 @@
-name: Tests Nico
-run-name : Tests de ${{ github.ref_name }} par ${{ github.actor }}
+name: Workflow complet CI CD Nico
+run-name : CI CD de ${{ github.ref_name }} par ${{ github.actor }}
 
 on: 
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   unit-tests:
-    name: Unit Tests
+    name: Unit Tests (CI part 1)
     runs-on: ubuntu-latest
 
     steps:
@@ -39,7 +39,7 @@ jobs:
         run : pytest -m "unit" -v --disable-warnings
 
   functional-tests:
-    name: Functional Tests
+    name: Functional Tests (CI part 3)
     runs-on: ubuntu-latest
     needs: unit-tests  # Optionnel : exécute les tests fonctionnels après les tests unitaires
 
@@ -71,11 +71,11 @@ jobs:
           pytest -m "functional" -v --disable-warnings
 
   call-example:
-    name: Call other task
+    name: CI part 2 (after part 1)
     uses: ./.github/workflows/after_unit_tests.yml
     needs: unit-tests
 
   call-deployment:
-    name: Call deployment
+    name: CD = Call deployment (after part 3)
     uses: ./.github/workflows/cd-nico.yml
     needs: functional-tests
