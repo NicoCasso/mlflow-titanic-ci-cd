@@ -5,15 +5,20 @@ on:
   workflow_call:
 
 jobs:
-  deploy:
+  build-and-test: # code de wael
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Liste des fichiers (debug)
-        run: ls -la
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      - name: Déploiement (exemple)
-        run: echo "Déploiement fictif terminé avec succès ✅"
+      - name: Build Docker image
+        run: |
+          docker build -t titanic-model:latest .
+
+      - name: Run tests with pytest inside Docker
+        run: |
+          docker run --rm titanic-model:latest pytest
