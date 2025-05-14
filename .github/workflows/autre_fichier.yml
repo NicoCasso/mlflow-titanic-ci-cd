@@ -1,5 +1,5 @@
-name: Autre_Fichier_Yml
-run-name: essai
+name: autre fichier yml
+run-name: Premier fichier lancé
 
 on:
   push:
