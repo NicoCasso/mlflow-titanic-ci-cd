@@ -68,11 +68,17 @@ def reduce_mem_usage(df: DataFrame, verbose: bool = True) -> None:
             if str(col_type).startswith("int"):
                 if c_min >= np.iinfo(np.int8).min and c_max <= np.iinfo(np.int8).max:
                     df[col] = df[col].astype(np.int8)
-                elif c_min >= np.iinfo(np.int16).min and c_max <= np.iinfo(np.int16).max:
+                elif (
+                    c_min >= np.iinfo(np.int16).min and c_max <= np.iinfo(np.int16).max
+                ):
                     df[col] = df[col].astype(np.int16)
-                elif c_min >= np.iinfo(np.int32).min and c_max <= np.iinfo(np.int32).max:
+                elif (
+                    c_min >= np.iinfo(np.int32).min and c_max <= np.iinfo(np.int32).max
+                ):
                     df[col] = df[col].astype(np.int32)
-                elif c_min >= np.iinfo(np.int64).min and c_max <= np.iinfo(np.int64).max:
+                elif (
+                    c_min >= np.iinfo(np.int64).min and c_max <= np.iinfo(np.int64).max
+                ):
                     df[col] = df[col].astype(np.int64)
             else:
                 if (

@@ -16,11 +16,13 @@ def test_replace_ext():
 
 
 def test_describe():
-    df = pd.DataFrame({
-        "A": [1, 2, 3, 4, 5],
-        "B": ["a", "b", "a", "b", "a"],
-        "C": [np.nan, 1, 2, 3, 4],
-    })
+    df = pd.DataFrame(
+        {
+            "A": [1, 2, 3, 4, 5],
+            "B": ["a", "b", "a", "b", "a"],
+            "C": [np.nan, 1, 2, 3, 4],
+        }
+    )
     desc = describe(df)
     assert "feature" in desc.columns
     assert "null_count" in desc.columns
@@ -30,10 +32,12 @@ def test_describe():
 
 
 def test_reduce_mem_usage():
-    df = pd.DataFrame({
-        "ints": np.random.randint(0, 100, size=1000),
-        "floats": np.random.rand(1000) * 1000,
-    })
+    df = pd.DataFrame(
+        {
+            "ints": np.random.randint(0, 100, size=1000),
+            "floats": np.random.rand(1000) * 1000,
+        }
+    )
     before = df.memory_usage().sum()
     reduce_mem_usage(df, verbose=False)
     after = df.memory_usage().sum()
@@ -43,17 +47,19 @@ def test_reduce_mem_usage():
 
 
 def test_preprocess():
-    train = pd.DataFrame({
-        "PassengerId": [1, 2],
-        "Name": ["Name1", "Name2"],
-        "Cabin": [np.nan, np.nan],
-        "Ticket": ["123", "456"],
-        "Embarked": ["C", np.nan],
-        "Fare": [7.25, np.nan],
-        "Age": [22, np.nan],
-        "Sex": ["male", "female"],
-        "Pclass": [3, 1],
-    })
+    train = pd.DataFrame(
+        {
+            "PassengerId": [1, 2],
+            "Name": ["Name1", "Name2"],
+            "Cabin": [np.nan, np.nan],
+            "Ticket": ["123", "456"],
+            "Embarked": ["C", np.nan],
+            "Fare": [7.25, np.nan],
+            "Age": [22, np.nan],
+            "Sex": ["male", "female"],
+            "Pclass": [3, 1],
+        }
+    )
 
     test = train.copy(deep=True)
     preprocess(train, test)
@@ -77,15 +83,17 @@ def test_preprocess():
 
 
 def test_reduce_mem_usage_type_limits():
-    df = pd.DataFrame({
-        "int8_col": [np.iinfo(np.int8).min, 0, np.iinfo(np.int8).max],
-        "int16_col": [np.iinfo(np.int16).min, 0, np.iinfo(np.int16).max],
-        "int32_col": [np.iinfo(np.int32).min, 0, np.iinfo(np.int32).max],
-        "int64_col": [np.iinfo(np.int64).min, 0, np.iinfo(np.int64).max],
-        "float16_col": [np.finfo(np.float16).min, 0.0, np.finfo(np.float16).max],
-        "float32_col": [np.finfo(np.float32).min, 0.0, np.finfo(np.float32).max],
-        "float64_col": [np.finfo(np.float64).min, 0.0, np.finfo(np.float64).max],
-    })
+    df = pd.DataFrame(
+        {
+            "int8_col": [np.iinfo(np.int8).min, 0, np.iinfo(np.int8).max],
+            "int16_col": [np.iinfo(np.int16).min, 0, np.iinfo(np.int16).max],
+            "int32_col": [np.iinfo(np.int32).min, 0, np.iinfo(np.int32).max],
+            "int64_col": [np.iinfo(np.int64).min, 0, np.iinfo(np.int64).max],
+            "float16_col": [np.finfo(np.float16).min, 0.0, np.finfo(np.float16).max],
+            "float32_col": [np.finfo(np.float32).min, 0.0, np.finfo(np.float32).max],
+            "float64_col": [np.finfo(np.float64).min, 0.0, np.finfo(np.float64).max],
+        }
+    )
     reduce_mem_usage(df, verbose=False)
     assert df["int8_col"].dtype == np.int8
     assert df["int16_col"].dtype == np.int16

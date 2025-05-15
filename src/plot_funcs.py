@@ -55,10 +55,12 @@ def confusion_matrix(cm: np.ndarray, fp: str, norm_axis: int = 1) -> None:
     cm_norm = cm / cm.sum(axis=norm_axis, keepdims=True)
     TN, FP_, FN, TP = cm.ravel()
     TN_norm, FP_norm, FN_norm, TP_norm = cm_norm.ravel()
-    annot = np.array([
-        [f"TN: {TN}\n({TN_norm:.3f})", f"FP: {FP_}\n({FP_norm:.3f})"],
-        [f"FN: {FN}\n({FN_norm:.3f})", f"TP: {TP}\n({TP_norm:.3f})"]
-    ])
+    annot = np.array(
+        [
+            [f"TN: {TN}\n({TN_norm:.3f})", f"FP: {FP_}\n({FP_norm:.3f})"],
+            [f"FN: {FN}\n({FN_norm:.3f})", f"TP: {TP}\n({TP_norm:.3f})"],
+        ]
+    )
     fig, ax = plt.subplots()
     sns.heatmap(
         cm_norm,
@@ -112,7 +114,9 @@ def metric(metrics: List[Dict[str, Any]], fp: str) -> None:
     plt.close(fig)
 
 
-def feature_importance(features: np.ndarray, feature_importances: np.ndarray, title: str, fp: str) -> None:
+def feature_importance(
+    features: np.ndarray, feature_importances: np.ndarray, title: str, fp: str
+) -> None:
     fig, ax = plt.subplots()
     idxes = np.argsort(feature_importances)[::-1]
     y = np.arange(len(feature_importances))
@@ -129,7 +133,9 @@ def feature_importance(features: np.ndarray, feature_importances: np.ndarray, ti
 
 def scores(scores: Dict[str, float], fp: str) -> None:
     array = np.array([v for v in scores.values()]).reshape((2, 2))
-    annot = np.array(["{}: {:.3f}".format(k, v) for k, v in scores.items()]).reshape((2, 2))
+    annot = np.array(["{}: {:.3f}".format(k, v) for k, v in scores.items()]).reshape(
+        (2, 2)
+    )
     fig, ax = plt.subplots()
     sns.heatmap(
         array,

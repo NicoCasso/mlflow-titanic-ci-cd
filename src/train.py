@@ -51,10 +51,7 @@ def log_plot(args: Any, plot_func: Callable, fp: str) -> None:
 
 
 def train_model(
-    X: pd.DataFrame,
-    y: pd.Series,
-    params: Dict[str, Any],
-    exp_path: str
+    X: pd.DataFrame, y: pd.Series, params: Dict[str, Any], exp_path: str
 ) -> Tuple[str, str]:
 
     fold_params = params["fold"]
@@ -100,11 +97,13 @@ def train_model(
                 callbacks=[lgbm.early_stopping(stopping_rounds=10)],
             )
 
-            metrics.append({
-                "name": model.metric,
-                "values": model.evals_result_["valid"][model.metric],
-                "best_iteration": model.best_iteration_,
-            })
+            metrics.append(
+                {
+                    "name": model.metric,
+                    "values": model.evals_result_["valid"][model.metric],
+                    "best_iteration": model.best_iteration_,
+                }
+            )
             models.append(model)
 
             feature_importances_split += (
@@ -134,13 +133,15 @@ def train_model(
             for k, v in scores_valid.items():
                 scores[k] += v / skf.n_splits
 
-        mlflow.log_params({
-            **fold_params,
-            **model_params,
-            **fit_params,
-            "cv": skf.__class__.__name__,
-            "model": model.__class__.__name__,
-        })
+        mlflow.log_params(
+            {
+                **fold_params,
+                **model_params,
+                **fit_params,
+                "cv": skf.__class__.__name__,
+                "model": model.__class__.__name__,
+            }
+        )
 
         print_divider("Saving plots")
         log_plot(scores, pf.scores, "scores.png")
@@ -208,7 +209,9 @@ def main() -> None:
 
     experiment_id, run_uuid = train_model(X, y, params, "titanic")
     print_divider("MLflow UI")
-    print(f"Run URL: http://127.0.0.1:5000/#/experiments/{experiment_id}/runs/{run_uuid}")
+    print(
+        f"Run URL: http://127.0.0.1:5000/#/experiments/{experiment_id}/runs/{run_uuid}"
+    )
     os.system("mlflow ui")
 
 
