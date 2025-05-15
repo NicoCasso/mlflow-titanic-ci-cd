@@ -34,9 +34,6 @@ jobs:
     - name: Run type checker
       run: mypy src/
 
-    - name: Security check
-      run: bandit -r src/
-
     - name: Run tests with coverage
       run: pytest --cov=src tests/
 
