@@ -3,9 +3,6 @@ import pandas as pd
 import os
 from tempfile import NamedTemporaryFile
 import matplotlib
-
-matplotlib.use("Agg")
-
 from src.plot_funcs import (
     label_share,
     corr_matrix,
@@ -16,6 +13,8 @@ from src.plot_funcs import (
     roc_curve,
     pr_curve,
 )
+
+matplotlib.use("Agg")
 
 
 def temp_filepath():

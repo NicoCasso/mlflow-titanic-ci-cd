@@ -1,18 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from typing import Union, List, Dict, Any
+import pandas as pd
 
-# sns.set_theme()  # pour le style par défaut
 sns.set_theme(style="whitegrid", palette="muted")
 
 DPI = 300
 
-
-# ______________________________________________________________________________
-#
-# region label_share
-# ______________________________________________________________________________
-def label_share(share, fp):
+def label_share(share: Union[pd.Series, np.ndarray], fp: str) -> None:
     share_norm = share / share.sum()
     fig, ax = plt.subplots()
     bar = sns.barplot(x=share_norm.index, y=share_norm.values)
@@ -32,12 +28,7 @@ def label_share(share, fp):
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
 
-
-# ______________________________________________________________________________
-#
-# region corr_matrix
-# ______________________________________________________________________________
-def corr_matrix(corr, fp):
+def corr_matrix(corr: pd.DataFrame, fp: str) -> None:
     fig, ax = plt.subplots()
     mask = np.zeros_like(corr, dtype=bool)
     mask[np.triu_indices_from(mask, k=1)] = True
@@ -57,27 +48,14 @@ def corr_matrix(corr, fp):
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
 
-
-# ______________________________________________________________________________
-#
-# region confusion_matrix
-# ______________________________________________________________________________
-def confusion_matrix(cm, fp, norm_axis=1):
-    """
-    [TN, FP]
-    [FN, TP]
-    """
-
+def confusion_matrix(cm: np.ndarray, fp: str, norm_axis: int = 1) -> None:
     cm_norm = cm / cm.sum(axis=norm_axis, keepdims=True)
-    TN, FP, FN, TP = cm.ravel()
+    TN, FP_, FN, TP = cm.ravel()
     TN_norm, FP_norm, FN_norm, TP_norm = cm_norm.ravel()
-    annot = np.array(
-        [
-            [f"TN: {TN}\n({TN_norm:.3f})", f"FP: {FP}\n({FP_norm:.3f})"],
-            [f"FN: {FN}\n({FN_norm:.3f})", f"TP: {TP}\n({TP_norm:.3f})"],
-        ]
-    )
-
+    annot = np.array([
+        [f"TN: {TN}\n({TN_norm:.3f})", f"FP: {FP_}\n({FP_norm:.3f})"],
+        [f"FN: {FN}\n({FN_norm:.3f})", f"TP: {TP}\n({TP_norm:.3f})"]
+    ])
     fig, ax = plt.subplots()
     sns.heatmap(
         cm_norm,
@@ -99,39 +77,38 @@ def confusion_matrix(cm, fp, norm_axis=1):
     fig.tight_layout()
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
+    
 
-
-# ______________________________________________________________________________
-#
-# region metric
-# ______________________________________________________________________________
-def metric(metrics, fp):
+def metric(metrics: List[Dict[str, Any]], fp: str) -> None:
     fig, ax = plt.subplots()
     for idx, data in enumerate(metrics):
-        line = ax.plot(data["values"], label="fold{}".format(idx), zorder=1)[0]
-        ax.scatter(
-            data["best_iteration"],
-            data["values"][data["best_iteration"] - 1],
-            s=60,
-            c=[line.get_color()],
-            edgecolors="k",
-            linewidths=1,
-            zorder=2,
-        )
+        values = data["values"]  # expected to be List[float]
+        best_iteration = data["best_iteration"]  # expected to be int
+        name = data["name"]  # expected to be str
+
+        if not isinstance(values, list) or not isinstance(best_iteration, int):
+            continue  # skip invalid data
+
+        line = ax.plot(values, label=f"fold{idx}", zorder=1)[0]
+        if 0 <= best_iteration - 1 < len(values):
+            ax.scatter(
+                best_iteration,
+                values[best_iteration - 1],
+                s=60,
+                c=[line.get_color()],
+                edgecolors="k",
+                linewidths=1,
+                zorder=2,
+            )
     ax.set_xlabel("Iterations")
-    ax.set_ylabel(metrics[0]["name"])
+    ax.set_ylabel(name)
     ax.set_title("Metric History (marker on each line represents the best iteration)")
     ax.legend()
     fig.tight_layout()
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
 
-
-# ______________________________________________________________________________
-#
-# region feature_importance
-# ______________________________________________________________________________
-def feature_importance(features, feature_importances, title, fp):
+def feature_importance(features: np.ndarray, feature_importances: np.ndarray, title: str, fp: str) -> None:
     fig, ax = plt.subplots()
     idxes = np.argsort(feature_importances)[::-1]
     y = np.arange(len(feature_importances))
@@ -145,16 +122,9 @@ def feature_importance(features, feature_importances, title, fp):
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
 
-
-# ______________________________________________________________________________
-#
-# region scores
-# ______________________________________________________________________________
-def scores(scores, fp):
+def scores(scores: Dict[str, float], fp: str) -> None:
     array = np.array([v for v in scores.values()]).reshape((2, 2))
-    annot = np.array(["{}: {:.3f}".format(k, v) for k, v in scores.items()]).reshape(
-        (2, 2)
-    )
+    annot = np.array(["{}: {:.3f}".format(k, v) for k, v in scores.items()]).reshape((2, 2))
     fig, ax = plt.subplots()
     sns.heatmap(
         array,
@@ -177,12 +147,7 @@ def scores(scores, fp):
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
 
-
-# ______________________________________________________________________________
-#
-# region roc_curve
-# ______________________________________________________________________________
-def roc_curve(fpr, tpr, auc, fp):
+def roc_curve(fpr: np.ndarray, tpr: np.ndarray, auc: float, fp: str) -> None:
     fig, ax = plt.subplots()
     ax.plot(fpr, tpr)
     ax.plot([0, 1], [0, 1], "k:")
@@ -193,12 +158,7 @@ def roc_curve(fpr, tpr, auc, fp):
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
 
-
-# ______________________________________________________________________________
-#
-# region pr_curve
-# ______________________________________________________________________________
-def pr_curve(pre, rec, auc, fp):
+def pr_curve(pre: np.ndarray, rec: np.ndarray, auc: float, fp: str) -> None:
     fig, ax = plt.subplots()
     ax.plot(pre, rec)
     ax.set_xlabel("Recall")

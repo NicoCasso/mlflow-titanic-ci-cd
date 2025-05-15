@@ -37,8 +37,9 @@ def test_main(mock_to_csv, mock_read_pickle, mock_search_runs, mock_load_pickle)
     # Mock search_runs : simule une réponse MLflow
     mock_search_runs.return_value = pd.DataFrame(
         {
-            #"params.model_path": ["file:///dummy_model_path"],
-            "params.model_path": ["mlruns/1234567890abcdefabcdefabcdefabcdef/artifacts/model"],
+            "params.model_path": [
+                "mlruns/1234567890abcdefabcdefabcdefabcdef/artifacts/model"
+            ],
             "metrics.accuracy": [0.99],
             "attribute.start_time": ["2023-01-01"],
         }

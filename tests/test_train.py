@@ -2,9 +2,8 @@ import pytest
 from unittest.mock import MagicMock
 import pandas as pd
 import numpy as np
-import os
 import mlflow
-from src.train import divide_by_sum, get_scores, train_model, main
+from src.train import divide_by_sum, get_scores, train_model
 import matplotlib
 
 matplotlib.use("Agg")
@@ -77,11 +76,9 @@ def test_train_model():
 # Test pour la fonction main (simuler sans exécuter le script complet)
 """def test_main(monkeypatch):
     monkeypatch.setattr('os.listdir', lambda x: ['data'])
-    
     # Mock la lecture de fichier pickle
     train_mock = MagicMock()
     train_mock.drop.return_value = pd.DataFrame(np.random.rand(100, 5))
     train_mock.__getitem__.return_value = pd.Series(np.random.randint(0, 2, 100))
     monkeypatch.setattr(pd, 'read_pickle', lambda path: train_mock)
-    
     main()  # Tester la fonction principale"""

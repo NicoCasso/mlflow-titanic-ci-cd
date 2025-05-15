@@ -2,6 +2,7 @@ import os
 import warnings
 import pickle
 from collections import defaultdict
+from typing import Any, Callable, Dict, Tuple, List
 
 import numpy as np
 import pandas as pd
@@ -26,19 +27,11 @@ from src.utils import print_divider
 from src.config import PROCESSED_TRAIN_PATH
 
 
-# ______________________________________________________________________________
-#
-# region divide_by_sum
-# ______________________________________________________________________________
-def divide_by_sum(x):
+def divide_by_sum(x: np.ndarray) -> np.ndarray:
     return x / x.sum()
 
 
-# ______________________________________________________________________________
-#
-# region get_scores
-# ______________________________________________________________________________
-def get_scores(y_true, y_pred):
+def get_scores(y_true: pd.Series, y_pred: pd.Series) -> Dict[str, float]:
     return {
         "accuracy": accuracy_score(y_true, y_pred),
         "precision": precision_score(y_true, y_pred),
@@ -47,12 +40,8 @@ def get_scores(y_true, y_pred):
     }
 
 
-# ______________________________________________________________________________
-#
-# region log_plot
-# ______________________________________________________________________________
-def log_plot(args, plot_func, fp):
-    if not isinstance(args, (tuple)):
+def log_plot(args: Any, plot_func: Callable, fp: str) -> None:
+    if not isinstance(args, tuple):
         args = (args,)
 
     plot_func(*args, fp)
@@ -60,27 +49,27 @@ def log_plot(args, plot_func, fp):
     os.remove(fp)
     print(f"Logged {fp}")
 
+def train_model(
+    X: pd.DataFrame,
+    y: pd.Series,
+    params: Dict[str, Any],
+    exp_path: str
+) -> Tuple[str, str]:
 
-# ______________________________________________________________________________
-#
-# region train_model
-# ______________________________________________________________________________
-def train_model(X, y, params, exp_path):
     fold_params = params["fold"]
     model_params = params["model"]
     fit_params = params["fit"]
 
-    # set mlflow experiment
     try:
         mlflow.create_experiment(exp_path)
     except (mlflow.exceptions.RestException, mlflow.exceptions.MlflowException):
-        print("The specified experiment ({}) already exists.".format(exp_path))
+        print(f"The specified experiment ({exp_path}) already exists.")
 
     mlflow.set_experiment(exp_path)
 
     skf = StratifiedKFold(**fold_params)
-    models = []
-    metrics = []
+    models: List[lgbm.LGBMClassifier] = []
+    metrics: List[Dict[str, Any]] = []
 
     y_proba = np.zeros(len(X))
     y_pred = np.zeros(len(X))
@@ -88,7 +77,7 @@ def train_model(X, y, params, exp_path):
     feature_importances_split = np.zeros(X.shape[1])
     feature_importances_gain = np.zeros(X.shape[1])
 
-    scores = defaultdict(int)
+    scores: Dict[str, float] = defaultdict(int)
 
     with mlflow.start_run() as run:
         corr = pd.concat((X, y), axis=1).corr()
@@ -101,7 +90,6 @@ def train_model(X, y, params, exp_path):
             X_train, X_valid = X.iloc[idx_train, :], X.iloc[idx_valid, :]
             y_train, y_valid = y.iloc[idx_train], y.iloc[idx_valid]
 
-            # train model
             model = lgbm.LGBMClassifier(**model_params)
             model.fit(
                 X_train,
@@ -110,28 +98,21 @@ def train_model(X, y, params, exp_path):
                 eval_names=["valid"],
                 callbacks=[lgbm.early_stopping(stopping_rounds=10)],
             )
-            metrics.append(
-                {
-                    "name": model.metric,
-                    "values": model.evals_result_["valid"][model.metric],
-                    "best_iteration": model.best_iteration_,
-                }
-            )
+
+            metrics.append({
+                "name": model.metric,
+                "values": model.evals_result_["valid"][model.metric],
+                "best_iteration": model.best_iteration_,
+            })
             models.append(model)
 
-            # feature importance
             feature_importances_split += (
-                divide_by_sum(
-                    model.booster_.feature_importance(importance_type="split")
-                )
-                / skf.n_splits
+                divide_by_sum(model.booster_.feature_importance("split")) / skf.n_splits
             )
             feature_importances_gain += (
-                divide_by_sum(model.booster_.feature_importance(importance_type="gain"))
-                / skf.n_splits
+                divide_by_sum(model.booster_.feature_importance("gain")) / skf.n_splits
             )
 
-            # predict
             y_valid_proba = model.predict_proba(
                 X_valid, num_iteration=model.best_iteration_
             )[:, 1]
@@ -139,41 +120,30 @@ def train_model(X, y, params, exp_path):
             y_proba[idx_valid] = y_valid_proba
             y_pred[idx_valid] = y_valid_pred
 
-            # evaluate
             scores_valid = get_scores(y_valid, y_valid_pred)
 
             mlflow.log_metrics(
-                {
-                    **scores_valid,
-                    "best_iteration": model.best_iteration_,
-                },
+                {**scores_valid, "best_iteration": model.best_iteration_},
                 step=fold_no,
             )
 
             print("\nScores")
             print(scores_valid)
 
-            # record scores
             for k, v in scores_valid.items():
                 scores[k] += v / skf.n_splits
 
-        # log training parameters
-        mlflow.log_params(
-            {
-                **fold_params,
-                **model_params,
-                **fit_params,
-                "cv": skf.__class__.__name__,
-                "model": model.__class__.__name__,
-            }
-        )
+        mlflow.log_params({
+            **fold_params,
+            **model_params,
+            **fit_params,
+            "cv": skf.__class__.__name__,
+            "model": model.__class__.__name__,
+        })
 
         print_divider("Saving plots")
-
-        # scores
         log_plot(scores, pf.scores, "scores.png")
 
-        # feature importance
         features = np.array(model.booster_.feature_name())
         log_plot(
             (features, feature_importances_split, "Feature Importance: split"),
@@ -186,44 +156,33 @@ def train_model(X, y, params, exp_path):
             "feature_importance_gain.png",
         )
 
-        # metric history
         log_plot(metrics, pf.metric, "metric_history.png")
 
-        # confusion matrix
         cm = confusion_matrix(y, y_pred)
         log_plot(cm, pf.confusion_matrix, "confusion_matrix.png")
 
-        # roc curve
         fpr, tpr, _ = roc_curve(y, y_proba)
         roc_auc = roc_auc_score(y, y_pred)
         log_plot((fpr, tpr, roc_auc), pf.roc_curve, "roc_curve.png")
 
-        # precision-recall curve
         pre, rec, _ = precision_recall_curve(y, y_proba)
         pr_auc = average_precision_score(y, y_pred)
         log_plot((pre, rec, pr_auc), pf.pr_curve, "pr_curve.png")
 
-        # pickle trained models
         models_path = "models.pkl"
         with open(models_path, "wb") as f:
             pickle.dump(models, f)
 
-        print(f"Heloo, BSWW, Logging model to MLflow: {models_path}")
+        print(f"Logging model to MLflow: {models_path}")
         mlflow.log_artifact(models_path)
         mlflow.log_param("model_path", os.path.join(run.info.artifact_uri, models_path))
         os.remove(models_path)
-    print(
-        f"Heloo, BSW2, Logging model to MLflow: {run.info.experiment_id}, {run.info.run_uuid}"
-    )
 
+    print(f"Logging model to MLflow: {run.info.experiment_id}, {run.info.run_uuid}")
     return run.info.experiment_id, run.info.run_uuid
 
 
-# ______________________________________________________________________________
-#
-# region main
-# ______________________________________________________________________________
-def main():
+def main() -> None:
     warnings.filterwarnings("ignore")
 
     print(os.listdir("data"))
@@ -233,7 +192,6 @@ def main():
     y = train["Survived"]
 
     SEED = 0
-
     params = {
         "model": {
             "objective": "binary",
@@ -249,11 +207,7 @@ def main():
 
     experiment_id, run_uuid = train_model(X, y, params, "titanic")
     print_divider("MLflow UI")
-    print(
-        "Run URL: http://127.0.0.1:5000/#/experiments/{0}/runs/{1}\n".format(
-            experiment_id, run_uuid
-        )
-    )
+    print(f"Run URL: http://127.0.0.1:5000/#/experiments/{experiment_id}/runs/{run_uuid}")
     os.system("mlflow ui")
 
 

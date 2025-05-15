@@ -25,6 +25,18 @@ jobs:
         pip install -r requirements.txt
         pip install flake8 black mypy bandit pytest pytest-cov
 
+    - name: Run lint
+      run: flake8 src/ tests/
+
+    - name: Run formatter check
+      run: black --check src/ tests/
+
+    - name: Run type checker
+      run: mypy src/
+
+    - name: Security check
+      run: bandit -r src/
+
     - name: Run tests with coverage
       run: pytest --cov=src tests/
 
