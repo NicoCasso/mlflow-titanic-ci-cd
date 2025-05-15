@@ -49,6 +49,7 @@ def log_plot(args: Any, plot_func: Callable, fp: str) -> None:
     os.remove(fp)
     print(f"Logged {fp}")
 
+
 def train_model(
     X: pd.DataFrame,
     y: pd.Series,

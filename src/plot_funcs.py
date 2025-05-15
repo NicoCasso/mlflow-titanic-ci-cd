@@ -8,6 +8,7 @@ sns.set_theme(style="whitegrid", palette="muted")
 
 DPI = 300
 
+
 def label_share(share: Union[pd.Series, np.ndarray], fp: str) -> None:
     share_norm = share / share.sum()
     fig, ax = plt.subplots()
@@ -28,6 +29,7 @@ def label_share(share: Union[pd.Series, np.ndarray], fp: str) -> None:
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
 
+
 def corr_matrix(corr: pd.DataFrame, fp: str) -> None:
     fig, ax = plt.subplots()
     mask = np.zeros_like(corr, dtype=bool)
@@ -47,6 +49,7 @@ def corr_matrix(corr: pd.DataFrame, fp: str) -> None:
     fig.tight_layout()
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
+
 
 def confusion_matrix(cm: np.ndarray, fp: str, norm_axis: int = 1) -> None:
     cm_norm = cm / cm.sum(axis=norm_axis, keepdims=True)
@@ -77,7 +80,7 @@ def confusion_matrix(cm: np.ndarray, fp: str, norm_axis: int = 1) -> None:
     fig.tight_layout()
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
-    
+
 
 def metric(metrics: List[Dict[str, Any]], fp: str) -> None:
     fig, ax = plt.subplots()
@@ -108,6 +111,7 @@ def metric(metrics: List[Dict[str, Any]], fp: str) -> None:
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
 
+
 def feature_importance(features: np.ndarray, feature_importances: np.ndarray, title: str, fp: str) -> None:
     fig, ax = plt.subplots()
     idxes = np.argsort(feature_importances)[::-1]
@@ -121,6 +125,7 @@ def feature_importance(features: np.ndarray, feature_importances: np.ndarray, ti
     fig.tight_layout()
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
+
 
 def scores(scores: Dict[str, float], fp: str) -> None:
     array = np.array([v for v in scores.values()]).reshape((2, 2))
@@ -147,6 +152,7 @@ def scores(scores: Dict[str, float], fp: str) -> None:
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
 
+
 def roc_curve(fpr: np.ndarray, tpr: np.ndarray, auc: float, fp: str) -> None:
     fig, ax = plt.subplots()
     ax.plot(fpr, tpr)
@@ -157,6 +163,7 @@ def roc_curve(fpr: np.ndarray, tpr: np.ndarray, auc: float, fp: str) -> None:
     fig.tight_layout()
     fig.savefig(fp, dpi=DPI)
     plt.close(fig)
+
 
 def pr_curve(pre: np.ndarray, rec: np.ndarray, auc: float, fp: str) -> None:
     fig, ax = plt.subplots()

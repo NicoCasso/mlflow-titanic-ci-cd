@@ -75,6 +75,7 @@ def test_preprocess():
     for col in train.columns:
         assert pd.api.types.is_numeric_dtype(train[col])
 
+
 def test_reduce_mem_usage_type_limits():
     df = pd.DataFrame({
         "int8_col": [np.iinfo(np.int8).min, 0, np.iinfo(np.int8).max],

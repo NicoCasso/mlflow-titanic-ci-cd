@@ -3,7 +3,6 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
-from typing import Tuple
 from src.config import TRAIN_PATH, TEST_PATH, PROCESSED_TRAIN_PATH, PROCESSED_TEST_PATH
 
 
@@ -52,6 +51,7 @@ def describe(df: DataFrame) -> DataFrame:
     df_ret["distinct"] = (df_ret["unique_count"] == nrows).astype(int)
 
     return df_ret
+
 
 # ______________________________________________________________________________
 #
