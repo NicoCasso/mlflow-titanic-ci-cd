@@ -11,4 +11,3 @@ def test_model_convergence():
     # On vérifie que le modèle a bien appris (score > 0.8 par exemple)
     score = model.score(X, y)
     assert score > 0.8
-

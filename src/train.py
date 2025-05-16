@@ -110,8 +110,11 @@ def train_model(X, y, params, exp_path):
             models.append(model)
 
             # feature importance
-            feature_importances_split += divide_by_sum(model.booster_.feature_importance(importance_type='split')) / skf.n_splits
-            feature_importances_gain += divide_by_sum(model.booster_.feature_importance(importance_type='gain')) / skf.n_splits
+            feature_importances_split += divide_by_sum(
+                model.booster_.feature_importance(importance_type='split')) / skf.n_splits
+            
+            feature_importances_gain += divide_by_sum(
+                model.booster_.feature_importance(importance_type='gain')) / skf.n_splits
 
             # predict
             y_valid_proba = model.predict_proba(X_valid, num_iteration=model.best_iteration_)[:, 1]

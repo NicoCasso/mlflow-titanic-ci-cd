@@ -33,7 +33,7 @@ jobs:
 
       - run: echo "Vérification du respect des conventions de code avec Black"
       - name: Run formatter check
-        run: black --check src/ tests/
+        run: black --check --verbose src/ tests/
         
       - run: echo "Vérification des types (comme si c'était une compilation)"
 

@@ -1,10 +1,7 @@
 import pytest
 import numpy as np
 import pandas as pd
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
-from src.preprocess import replace_ext, describe, reduce_mem_usage, preprocess
+from src.preprocess import preprocess
 
 # -------------------------------
 # Test fonctionnel : applique tout un pipeline de preprocessing

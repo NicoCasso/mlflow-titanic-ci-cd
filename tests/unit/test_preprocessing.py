@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
-from src.preprocess import replace_ext, describe, reduce_mem_usage, preprocess
+from src.preprocess import replace_ext, describe, reduce_mem_usage
 
 @pytest.mark.unit
 def test_pipeline_reproducibility():

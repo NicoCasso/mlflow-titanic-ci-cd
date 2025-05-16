@@ -1,16 +1,16 @@
+import os
 import pytest
 import numpy as np
 import pandas as pd
-import os
 from tempfile import NamedTemporaryFile
-import matplotlib
-matplotlib.use('Agg')
-
 from src.plot_funcs import (
     label_share, corr_matrix, confusion_matrix,
     metric, feature_importance, scores,
     roc_curve, pr_curve
 )
+import matplotlib
+
+matplotlib.use('Agg')
 
 def temp_filepath():
     """Utilitaire pour créer un chemin temporaire pour une image."""

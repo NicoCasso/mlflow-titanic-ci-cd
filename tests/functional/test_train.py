@@ -2,11 +2,9 @@ import pytest
 from unittest.mock import MagicMock
 import pandas as pd
 import numpy as np
-import os
 import mlflow
-from src.train import divide_by_sum, get_scores, train_model, main
-import matplotlib
-matplotlib.use('Agg')
+from src.train import train_model
+
 
 # -------------------------------
 # Fixture : mock de MLflow pour tous les tests
@@ -56,16 +54,15 @@ def test_train_model():
 
 # -------------------------------
 # Test fonctionnel (désactivé ici) : pipeline complet de train
-# Pour l’activer, décommente la fonction
-"""
-@pytest.mark.functional
-def test_main(monkeypatch):
-    monkeypatch.setattr('os.listdir', lambda x: ['data'])
+# Pour l’activer, décommenter la fonction
 
-    train_mock = MagicMock()
-    train_mock.drop.return_value = pd.DataFrame(np.random.rand(100, 5))
-    train_mock.__getitem__.return_value = pd.Series(np.random.randint(0, 2, 100))
-    monkeypatch.setattr(pd, 'read_pickle', lambda path: train_mock)
+# @pytest.mark.functional
+# def test_main(monkeypatch):
+#     monkeypatch.setattr('os.listdir', lambda x: ['data'])
 
-    main()
-"""
+#     train_mock = MagicMock()
+#     train_mock.drop.return_value = pd.DataFrame(np.random.rand(100, 5))
+#     train_mock.__getitem__.return_value = pd.Series(np.random.randint(0, 2, 100))
+#     monkeypatch.setattr(pd, 'read_pickle', lambda path: train_mock)
+
+#     main()

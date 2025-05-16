@@ -25,19 +25,19 @@ class EnsembleModel:
 #
 # region get_experiment_id_folder
 #______________________________________________________________________________
-def get_experiment_id_folder_name() :
+def get_experiment_id_folder_name():
     experiment_id_folder_name = '0'
     mlruns_path = os.path.join(os.getcwd(), "mlruns")
     if os.path.exists(mlruns_path):
         for root, dirs, files in os.walk(mlruns_path):
             for dir_name in dirs:
-                if dir_name in ["0", ".trash"] :
+                if dir_name in ["0", ".trash"]:
                     continue
 
                 experiment_id_folder_name = dir_name
                 break
         
-            if experiment_id_folder_name != '0' : 
+            if experiment_id_folder_name != '0': 
                 break
     else:
         print(f"❌ Le dossier {mlruns_path} n'existe pas.")
@@ -60,7 +60,6 @@ def main():
     if runs.empty:
         raise ValueError(f"Aucun run trouvé pour l'expérience ID={EXPERIMENT_ID}")
 
-
     print(runs)
     print(runs.columns)
     print(runs.head())
@@ -70,8 +69,9 @@ def main():
     parsed_path = re.sub('^file://', '', raw_path)
     models_path = os.path.normpath(parsed_path.lstrip('/'))
 
-    models_path= '/' + models_path # sous Linux
-    #/home/nicolascassonnet/Documents/WORK/mlflow-titanic-ci-cd/mlruns/961726105335844291/9f7a1ec644254408b2f6e1034cad193f/artifacts/models.pkl
+    models_path = '/' + models_path  # sous Linux
+    # /mlflow-titanic-ci-cd/mlruns/961726105335844291
+    # /9f7a1ec644254408b2f6e1034cad193f/artifacts/models.pkl
 
     models = load_pickle(models_path)
     model = EnsembleModel(models)

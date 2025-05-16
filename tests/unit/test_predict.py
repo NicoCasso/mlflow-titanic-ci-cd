@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import pytest
 from src import predict  # Assure-toi que le dossier src contient bien un __init__.py
 from tests.dummy_model import DummyModel
@@ -15,4 +14,3 @@ def test_ensemble_model_predict_proba():
 
     expected = np.array([[0.1, 0.9]] * 3)
     np.testing.assert_array_almost_equal(result, expected)
-
