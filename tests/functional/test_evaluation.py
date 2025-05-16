@@ -5,6 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score
 
+
 @pytest.mark.functional
 def test_f1_score_threshold():
     X, y = make_classification(n_samples=500, n_features=10, random_state=42)
@@ -15,8 +16,9 @@ def test_f1_score_threshold():
     score = f1_score(y_test, y_pred)
     assert score >= 0.75
 
+
 @pytest.mark.functional
 def test_bias_on_subgroup():
     X, y = make_classification(n_samples=100, n_features=5, random_state=0)
-    subgroup = np.random.choice(['region1', 'region2'], size=100)
-    assert 'region1' in subgroup and 'region2' in subgroup
+    subgroup = np.random.choice(["region1", "region2"], size=100)
+    assert "region1" in subgroup and "region2" in subgroup

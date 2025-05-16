@@ -3,6 +3,7 @@ import pytest
 from src import predict  # Assure-toi que le dossier src contient bien un __init__.py
 from tests.dummy_model import DummyModel
 
+
 # ✅ Test unitaire : vérifie une méthode d'une classe isolée
 @pytest.mark.unit
 def test_ensemble_model_predict_proba():

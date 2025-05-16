@@ -1,5 +1,6 @@
 import numpy as np
 
+
 # DummyModel pour simuler un modèle entraîné
 class DummyModel:
     def __init__(self):

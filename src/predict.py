@@ -6,10 +6,11 @@ import mlflow
 from src.utils import load_pickle
 from src.config import DATA_DIR, PROCESSED_TEST_PATH
 
-#______________________________________________________________________________
+
+# ______________________________________________________________________________
 #
 # region EnsembleModel
-#______________________________________________________________________________
+# ______________________________________________________________________________
 class EnsembleModel:
     def __init__(self, models):
         self.models = models
@@ -21,12 +22,12 @@ class EnsembleModel:
         return proba / len(self.models)
 
 
-#______________________________________________________________________________
+# ______________________________________________________________________________
 #
 # region get_experiment_id_folder
-#______________________________________________________________________________
+# ______________________________________________________________________________
 def get_experiment_id_folder_name():
-    experiment_id_folder_name = '0'
+    experiment_id_folder_name = "0"
     mlruns_path = os.path.join(os.getcwd(), "mlruns")
     if os.path.exists(mlruns_path):
         for root, dirs, files in os.walk(mlruns_path):
@@ -36,8 +37,8 @@ def get_experiment_id_folder_name():
 
                 experiment_id_folder_name = dir_name
                 break
-        
-            if experiment_id_folder_name != '0': 
+
+            if experiment_id_folder_name != "0":
                 break
     else:
         print(f"❌ Le dossier {mlruns_path} n'existe pas.")
@@ -45,18 +46,19 @@ def get_experiment_id_folder_name():
     return experiment_id_folder_name
 
 
-#______________________________________________________________________________
+# ______________________________________________________________________________
 #
 # region main
-#______________________________________________________________________________
+# ______________________________________________________________________________
 def main():
     EXPERIMENT_ID = get_experiment_id_folder_name()
- 
+
     runs = mlflow.search_runs(
         experiment_ids=[EXPERIMENT_ID],
-        order_by=['metrics.accuracy DESC', 'attribute.start_time DESC'],
-        max_results=10)
-    
+        order_by=["metrics.accuracy DESC", "attribute.start_time DESC"],
+        max_results=10,
+    )
+
     if runs.empty:
         raise ValueError(f"Aucun run trouvé pour l'expérience ID={EXPERIMENT_ID}")
 
@@ -64,12 +66,12 @@ def main():
     print(runs.columns)
     print(runs.head())
 
-    #models_path = re.sub('^file://', '', runs.loc[0, 'params.model_path'])
-    raw_path = runs.loc[0, 'params.model_path']
-    parsed_path = re.sub('^file://', '', raw_path)
-    models_path = os.path.normpath(parsed_path.lstrip('/'))
+    # models_path = re.sub('^file://', '', runs.loc[0, 'params.model_path'])
+    raw_path = runs.loc[0, "params.model_path"]
+    parsed_path = re.sub("^file://", "", raw_path)
+    models_path = os.path.normpath(parsed_path.lstrip("/"))
 
-    models_path = '/' + models_path  # sous Linux
+    models_path = "/" + models_path  # sous Linux
     # /mlflow-titanic-ci-cd/mlruns/961726105335844291
     # /9f7a1ec644254408b2f6e1034cad193f/artifacts/models.pkl
 
@@ -78,9 +80,9 @@ def main():
 
     X_test = pd.read_pickle(PROCESSED_TEST_PATH)
     proba = model.predict_proba(X_test)[:, 1]
-    fp = os.path.join(DATA_DIR, 'prediction.csv')
-    pd.DataFrame(proba, columns=['probaz']).to_csv(fp, index=False)
+    fp = os.path.join(DATA_DIR, "prediction.csv")
+    pd.DataFrame(proba, columns=["probaz"]).to_csv(fp, index=False)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
