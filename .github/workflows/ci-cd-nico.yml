@@ -18,23 +18,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - run: echo "installation des dépendances"
       - name: Installation des dépendances
         run: |
            python -m pip install --upgrade pip
            pip install flake8 black mypy bandit pytest pytest-cov
 
-      - run: echo "Linting" 
-      - run: echo " Recherche les erreurs de syntaxe, les imports et variables inutiles,"
-      - run: echo " les mauvaise indentations, noms malformés, erreurs logiques simples"
+      - run: | 
+          echo "Linting" 
+          echo " Recherche les erreurs de syntaxe, les imports et variables inutiles,"
+          echo " les mauvaise indentations, noms malformés, erreurs logiques simples"
+
       - name: Run code analysis
         run: flake8 src/ tests/
 
       - run: echo "Vérification du respect des conventions de code avec Black"
       - name: Run formatter check
         run: black --check src/ tests/
-      
+        
       - run: echo "Vérification des types (comme si c'était une compilation)"
+
       - name: Run type checker
         run: mypy src/
 
